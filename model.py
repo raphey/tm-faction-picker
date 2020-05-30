@@ -5,10 +5,10 @@ import pandas as pd
 
 from constants import COLORS
 from constants import FACTION_TO_COLOR_DICT
+from constants import FACTIONS
 from constants import HEADERS_AND_TYPES
 from constants import PASSING_BONUSES
 from constants import ROUND_TILES
-from constants import SKIPPED_FACTIONS
 
 
 SplitRow = namedtuple('SplitRow', ['game_name',
@@ -64,15 +64,18 @@ def get_game_row_split_into_four_rows(game_row):
     return split_rows
 
 
+def is_game_row_valid(game_row):
+    return all(getattr(game_row, 'faction_p{}'.format(i)) in FACTIONS for i in range(1, 5))
+
 def main():
     df = pd.read_csv('tm_training_data.csv',
                      names=[h for h, _ in HEADERS_AND_TYPES],
                      dtype=dict(HEADERS_AND_TYPES))
     for row in df.itertuples():
+        if not is_game_row_valid(row):
+            continue
         for split_row in get_game_row_split_into_four_rows(row):
             print(split_row)
-        quit()
-        # Need to filter out yetis, etc
 
 
 main()

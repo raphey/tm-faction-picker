@@ -25,26 +25,21 @@ PASSING_BONUSES = ['pass:BON{}'.format(i) for i in range(1, 11)]
 ROUND_TILES = ['SCORE{}'.format(i) for i in range(1, 10)]
 
 FACTION_TO_COLOR_DICT = {'alchemists': 'black',
-                       'auren': 'green',
-                       'chaosmagicians': 'red',
-                       'cultists': 'brown',
-                       'darklings': 'black',
-                       'dwarves': 'gray',
-                       'engineers': 'gray',
-                       'fakirs': 'yellow',
-                       'giants': 'red',
-                       'halflings': 'brown',
-                       'mermaids': 'blue',
-                       'nomads': 'yellow',
-                       'swarmlings': 'blue',
-                       'witches': 'green',
-                       }
+                         'auren': 'green',
+                         'chaosmagicians': 'red',
+                         'cultists': 'brown',
+                         'darklings': 'black',
+                         'dwarves': 'gray',
+                         'engineers': 'gray',
+                         'fakirs': 'yellow',
+                         'giants': 'red',
+                         'halflings': 'brown',
+                         'mermaids': 'blue',
+                         'nomads': 'yellow',
+                         'swarmlings': 'blue',
+                         'witches': 'green',
+                         }
 
-SKIPPED_FACTIONS = ['acolytes',
-                    'dragonlords',
-                    'icemaidens',
-                    'riverwalkers',
-                    'shapeshifters',
-                    'yetis']
+FACTIONS = sorted([f for f in FACTION_TO_COLOR_DICT.keys()])
 
 COLORS = sorted({c for c in FACTION_TO_COLOR_DICT.values()})
