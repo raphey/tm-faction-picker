@@ -67,6 +67,30 @@ def get_game_row_split_into_four_rows(game_row):
 def is_game_row_valid(game_row):
     return all(getattr(game_row, 'faction_p{}'.format(i)) in FACTIONS for i in range(1, 5))
 
+
+def get_feature_array_and_label(split_row):
+    missing_bonuses = get_n_hot_array(split_row.missing_bonuses, PASSING_BONUSES)
+    missing_round_tiles = get_n_hot_array(split_row.missing_round_tiles, ROUND_TILES)
+    round_tiles = np.concatenate([get_n_hot_array([getattr(split_row, 'tile_r{}'.format(i))], ROUND_TILES)
+                                 for i in range(1, 7)])
+    previous_factions_picked = get_n_hot_array(split_row.previous_factions_picked, FACTIONS)
+    previous_colors_picked = get_n_hot_array(split_row.previous_colors_picked, COLORS)
+    your_player_number = get_n_hot_array([split_row.your_player_number], list(range(1, 5)))
+    your_faction = get_n_hot_array([split_row.your_faction], FACTIONS)
+    your_color = get_n_hot_array([split_row.your_color], COLORS)
+
+    feature_array = np.concatenate([missing_bonuses,
+                                    missing_round_tiles,
+                                    round_tiles,
+                                    previous_factions_picked,
+                                    previous_colors_picked,
+                                    your_player_number,
+                                    your_faction,
+                                    your_color])
+    label = split_row.your_winning_score_pct
+    return feature_array, label
+
+
 def main():
     df = pd.read_csv('tm_training_data.csv',
                      names=[h for h, _ in HEADERS_AND_TYPES],
@@ -76,6 +100,8 @@ def main():
             continue
         for split_row in get_game_row_split_into_four_rows(row):
             print(split_row)
+            print(get_feature_array_and_label(split_row))
+        quit()
 
 
 main()
