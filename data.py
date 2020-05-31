@@ -93,17 +93,28 @@ def get_feature_array_and_label(split_row):
     return feature_array, label
 
 
-def main():
-    df = pd.read_csv('tm_training_data.csv',
+def get_df_from_file(training_data_path):
+    df = pd.read_csv(training_data_path,
                      names=[h for h, _ in HEADERS_AND_TYPES],
                      dtype=dict(HEADERS_AND_TYPES))
     df = filter_out_extra_factions(df)
+    return df
 
+
+def get_processed_data(df):
+    all_features, all_labels = [], []
     for row in df.itertuples():
         for split_row in get_game_row_split_into_four_rows(row):
-            print(split_row)
-            print(get_feature_array_and_label(split_row)[0].shape)
-        quit()
+            features, label = get_feature_array_and_label(split_row)
+            all_features.append(features)
+            all_labels.append(label)
+    return np.array(all_features), np.array(all_labels)
 
 
-main()
+def get_train_and_test_data_plus_raw_test_data(training_data_path='tm_training_data.csv'):
+    df = get_df_from_file(training_data_path)
+    raw_train_data = df.sample(frac=0.9, random_state=0)
+    raw_test_data = df.drop(raw_train_data.index)
+    train_data = get_processed_data(raw_train_data)
+    test_data = get_processed_data(raw_test_data)
+    return train_data, test_data, raw_test_data
