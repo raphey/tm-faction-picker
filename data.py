@@ -100,8 +100,6 @@ def main():
     df = filter_out_extra_factions(df)
 
     for row in df.itertuples():
-        if not is_game_row_valid(row):
-            continue
         for split_row in get_game_row_split_into_four_rows(row):
             print(split_row)
             print(get_feature_array_and_label(split_row)[0].shape)
