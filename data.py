@@ -64,8 +64,10 @@ def get_game_row_split_into_four_rows(game_row):
     return split_rows
 
 
-def is_game_row_valid(game_row):
-    return all(getattr(game_row, 'faction_p{}'.format(i)) in FACTIONS for i in range(1, 5))
+def filter_out_extra_factions(df):
+    for i in range(1, 5):
+        df = df[getattr(df, 'faction_p{}'.format(i)).isin(FACTIONS)]
+    return df
 
 
 def get_feature_array_and_label(split_row):
@@ -95,6 +97,8 @@ def main():
     df = pd.read_csv('tm_training_data.csv',
                      names=[h for h, _ in HEADERS_AND_TYPES],
                      dtype=dict(HEADERS_AND_TYPES))
+    df = filter_out_extra_factions(df)
+
     for row in df.itertuples():
         if not is_game_row_valid(row):
             continue
