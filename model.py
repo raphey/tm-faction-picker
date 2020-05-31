@@ -26,7 +26,7 @@ def build_model(input_shape):
     return model
 
 
-def main():
+def train_and_save():
     (train_features, train_labels), (test_features, test_labels), _ = get_train_and_test_data_plus_raw_test_data()
     model = build_model(train_features.shape[1])
     model.summary()
@@ -96,7 +96,6 @@ def play_with_model(model_path='tm_model_20200530-220911.h5'):
     processed_features_all_factions = get_processed_features_for_all_possible_picks(sample_game_3)
     for faction, processed_features in processed_features_all_factions.items():
         print('Prediction for {}: {}'.format(faction, model.predict(np.array([processed_features]))))
-
 
 
 play_with_model()
