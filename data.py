@@ -11,22 +11,30 @@ from constants import PASSING_BONUSES
 from constants import ROUND_TILES
 
 
-SplitRow = namedtuple('SplitRow', ['game_name',
-                                   'missing_bonuses',
-                                   'missing_round_tiles',
-                                   'tile_r1',
-                                   'tile_r2',
-                                   'tile_r3',
-                                   'tile_r4',
-                                   'tile_r5',
-                                   'tile_r6',
-                                   'previous_factions_picked',
-                                   'previous_colors_picked',
-                                   'your_player_number',
-                                   'your_faction',
-                                   'your_color',
-                                   'your_winning_score_pct'
-                                   ])
+PREDICTION_FEATURES = [
+    'missing_bonuses',
+    'missing_round_tiles',
+    'tile_r1',
+    'tile_r2',
+    'tile_r3',
+    'tile_r4',
+    'tile_r5',
+    'tile_r6',
+    'previous_factions_picked',
+    'previous_colors_picked',
+    'your_player_number',
+]
+
+TRAINING_FEATURES = PREDICTION_FEATURES + [
+    'game_name',
+    'your_faction',
+    'your_color',
+    'your_winning_score_pct'
+]
+
+TrainingGameState = namedtuple('TrainingGameState', TRAINING_FEATURES)
+
+PredictionGameState = namedtuple('PredictionGameState', PREDICTION_FEATURES)
 
 
 def get_n_hot_array(hot_values, all_values):
@@ -60,7 +68,7 @@ def get_game_row_split_into_four_rows(game_row):
         new_split_row_dict['your_winning_score_pct'] = your_winning_score_pct
         factions_picked.append(your_faction)
         colors_picked.append(your_color)
-        split_rows.append(SplitRow(**new_split_row_dict))
+        split_rows.append(TrainingGameState(**new_split_row_dict))
     return split_rows
 
 
@@ -118,3 +126,17 @@ def get_train_and_test_data_plus_raw_test_data(training_data_path='tm_training_d
     train_data = get_processed_data(raw_train_data)
     test_data = get_processed_data(raw_test_data)
     return train_data, test_data, raw_test_data
+
+
+def get_processed_features_for_all_possible_picks(prediction_game_state):
+    faction_features = {}
+    for faction in FACTIONS:
+        color = FACTION_TO_COLOR_DICT[faction]
+        hypothetical_game_state_dict = prediction_game_state._asdict()
+        hypothetical_game_state_dict['your_faction'] = faction
+        hypothetical_game_state_dict['your_color'] = color
+        hypothetical_game_state_dict['game_name'] = 'hypothetical_game'  # dummy game name
+        hypothetical_game_state_dict['your_winning_score_pct'] = 1.0     # dummy label
+        hypothetical_game_state = TrainingGameState(**hypothetical_game_state_dict)
+        faction_features[faction] = get_feature_array_and_label(hypothetical_game_state)[0]
+    return faction_features
