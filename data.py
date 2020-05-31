@@ -100,7 +100,7 @@ def main():
             continue
         for split_row in get_game_row_split_into_four_rows(row):
             print(split_row)
-            print(get_feature_array_and_label(split_row))
+            print(get_feature_array_and_label(split_row)[0].shape)
         quit()
 
 
