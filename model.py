@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-
+import tensorflowjs as tfjs
 
 from data import get_processed_features_for_all_possible_picks
 from data import get_train_and_test_data_plus_raw_test_data
@@ -79,23 +79,31 @@ def play_with_model(model_path='tm_model_20200530-220911.h5'):
     processed_features_all_factions = get_processed_features_for_all_possible_picks(sample_game_2)
     for faction, processed_features in processed_features_all_factions.items():
         print('Prediction for {}: {}'.format(faction, model.predict(np.array([processed_features]))))
+
+
     print('***********')
-    # One more attempt, this time skewing the bonuses against darklings
+    # What if we try to make things heavily favor darklings?
     sample_game_3 = PredictionGameState(missing_bonuses=['pass:BON8', 'pass:BON5', 'pass:BON3'],
-                                        missing_round_tiles=['SCORE3', 'SCORE5', 'SCORE9'],
-                                        tile_r1='SCORE1',
-                                        tile_r2='SCORE7',
-                                        tile_r3='SCORE2',
-                                        tile_r4='SCORE8',
-                                        tile_r5='SCORE6',
-                                        tile_r6='SCORE4',
-                                        previous_factions_picked=[],
-                                        previous_colors_picked=[],
-                                        your_player_number=1
+                                        missing_round_tiles=['SCORE8', 'SCORE5', 'SCORE9'],
+                                        tile_r1='SCORE2',
+                                        tile_r2='SCORE8',
+                                        tile_r3='SCORE3',
+                                        tile_r4='SCORE1',
+                                        tile_r5='SCORE4',
+                                        tile_r6='SCORE7',
+                                        previous_factions_picked=['chaosmagicians', 'engineers'],
+                                        previous_colors_picked=['red', 'gray'],
+                                        your_player_number=3
                                         )
     processed_features_all_factions = get_processed_features_for_all_possible_picks(sample_game_3)
     for faction, processed_features in processed_features_all_factions.items():
         print('Prediction for {}: {}'.format(faction, model.predict(np.array([processed_features]))))
 
 
-play_with_model()
+def convert_h5_model_to_tensorflowjs(model_path):
+    model = keras.models.load_model(model_path)
+    tfjs.converters.save_keras_model(model, 'tfjs_model')
+
+
+convert_h5_model_to_tensorflowjs('tm_model_20200530-220911.h5')
+
