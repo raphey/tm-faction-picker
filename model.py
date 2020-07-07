@@ -33,7 +33,7 @@ def train_and_save():
     print('Training model')
     _ = model.fit(train_features,
                   train_labels,
-                  epochs=1,
+                  epochs=2,
                   validation_split=0.1,
                   verbose=1,)
     print('Evaluating model')
@@ -44,7 +44,7 @@ def train_and_save():
     model.save(model_save_path)
 
 
-def play_with_model(model_path='tm_model_20200706-231236.h5'):
+def play_with_model(model_path='tm_model_20200706.h5'):
     model = keras.models.load_model(model_path)
     print(model.predict(np.zeros((1, 119))))
     sample_game_1 = PredictionGameState(missing_bonuses=['pass:BON9', 'pass:BON6', 'pass:BON3'],
@@ -106,9 +106,9 @@ def convert_h5_model_to_tensorflowjs(model_path):
     tfjs.converters.save_keras_model(model, 'tfjs_model')
 
 
-convert_h5_model_to_tensorflowjs('tm_model_20200706-231236.h5')
+convert_h5_model_to_tensorflowjs('tm_model_20200706.h5')
 
-# play_with_model()
+play_with_model()
 
 
-# train_and_save()
+train_and_save()

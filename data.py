@@ -119,7 +119,7 @@ def get_processed_data(df):
     return np.array(all_features), np.array(all_labels)
 
 
-def get_train_and_test_data_plus_raw_test_data(training_data_path='tm_training_data.csv'):
+def get_train_and_test_data_plus_raw_test_data(training_data_path='tm_training_data_20200706.csv'):
     df = get_df_from_file(training_data_path)
     raw_train_data = df.sample(frac=0.9, random_state=0)
     raw_test_data = df.drop(raw_train_data.index)
