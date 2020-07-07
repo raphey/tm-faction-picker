@@ -139,4 +139,6 @@ def get_processed_features_for_all_possible_picks(prediction_game_state):
         hypothetical_game_state_dict['your_winning_score_pct'] = 1.0     # dummy label
         hypothetical_game_state = TrainingGameState(**hypothetical_game_state_dict)
         faction_features[faction] = get_feature_array_and_label(hypothetical_game_state)[0]
+        print(faction, faction_features[faction][-21:])
+        print(faction, faction_features[faction][:-21])
     return faction_features

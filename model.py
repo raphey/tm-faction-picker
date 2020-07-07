@@ -44,8 +44,9 @@ def train_and_save():
     model.save(model_save_path)
 
 
-def play_with_model(model_path='tm_model_20200530-220911.h5'):
+def play_with_model(model_path='tm_model_20200706-231236.h5'):
     model = keras.models.load_model(model_path)
+    print(model.predict(np.zeros((1, 119))))
     sample_game_1 = PredictionGameState(missing_bonuses=['pass:BON9', 'pass:BON6', 'pass:BON3'],
                                         missing_round_tiles=['SCORE3', 'SCORE5', 'SCORE9'],
                                         tile_r1='SCORE8',
@@ -81,19 +82,19 @@ def play_with_model(model_path='tm_model_20200530-220911.h5'):
         print('Prediction for {}: {}'.format(faction, model.predict(np.array([processed_features]))))
 
 
-    print('***********')
+    print('***********dddd************')
     # What if we try to make things heavily favor darklings?
-    sample_game_3 = PredictionGameState(missing_bonuses=['pass:BON8', 'pass:BON5', 'pass:BON3'],
-                                        missing_round_tiles=['SCORE8', 'SCORE5', 'SCORE9'],
-                                        tile_r1='SCORE2',
-                                        tile_r2='SCORE8',
-                                        tile_r3='SCORE3',
+    sample_game_3 = PredictionGameState(missing_bonuses=['pass:BON10', 'pass:BON6', 'pass:BON4'],
+                                        missing_round_tiles=['SCORE2', 'SCORE4', 'SCORE9'],
+                                        tile_r1='SCORE7',
+                                        tile_r2='SCORE3',
+                                        tile_r3='SCORE6',
                                         tile_r4='SCORE1',
-                                        tile_r5='SCORE4',
-                                        tile_r6='SCORE7',
-                                        previous_factions_picked=['chaosmagicians', 'engineers'],
-                                        previous_colors_picked=['red', 'gray'],
-                                        your_player_number=3
+                                        tile_r5='SCORE5',
+                                        tile_r6='SCORE8',
+                                        previous_factions_picked=[],
+                                        previous_colors_picked=[],
+                                        your_player_number=1
                                         )
     processed_features_all_factions = get_processed_features_for_all_possible_picks(sample_game_3)
     for faction, processed_features in processed_features_all_factions.items():
@@ -105,5 +106,9 @@ def convert_h5_model_to_tensorflowjs(model_path):
     tfjs.converters.save_keras_model(model, 'tfjs_model')
 
 
-convert_h5_model_to_tensorflowjs('tm_model_20200530-220911.h5')
+convert_h5_model_to_tensorflowjs('tm_model_20200706-231236.h5')
 
+# play_with_model()
+
+
+# train_and_save()
